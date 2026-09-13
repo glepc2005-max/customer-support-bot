@@ -1,0 +1,8 @@
+streamlit
+gdown
+scikit-learn
+transformers
+sentence-transformers
+faiss-cpu
+groq
+torch --index-url https://download.pytorch.org/whl/cpu
