@@ -76,7 +76,7 @@ if user_query := st.chat_input("اكتب استفسارك أو شكواك هنا
             inputs = sent_tokenizer(user_query, return_tensors="pt", truncation=True, padding=True)
             outputs = sent_model(**inputs)
             sent_id = outputs.logits.argmax(dim=-1).item()
-            sent_str = "frustrated" if sent_id == 0 else "neutral"
+            sent_str = "Frustrated / Angry" if sent_id == 0 else "Neutral"
             
             intent_pred = intent_model.predict([user_query])[0]
             
@@ -86,23 +86,20 @@ if user_query := st.chat_input("اكتب استفسارك أو شكواك هنا
             context = "\n".join([f"- {chunk.strip()}" for chunk in retrieved_chunks])
             
             prompt = (
-                "[System Instructions]\n"
-                "You are a strict customer support assistant.\n"
-                "Your ONLY job is to answer based EXCLUSIVELY on the provided Context.\n"
-                "Rules:\n"
-                "1. If context does not contain the answer, reply EXACTLY with: \"I apologize, but I don't have that information. Let me connect you with an agent.\"\n"
-                "2. NEVER use general knowledge.\n"
-                f"3. Customer Sentiment: {sent_str}. If frustrated, start with a polite apology.\n\n"
-                "[Context]\n"
-                f"{context}\n\n"
-                "[Customer Question]\n"
-                f"\"{user_query}\"\n"
+                "System Instructions:\n"
+                "You are a professional customer support assistant.\n"
+                "1. Answer the customer query using ONLY the provided Context.\n"
+                "2. LANGUAGE RULE: You MUST reply in the exact same language as the customer's question (If the customer writes in Arabic, you must reply in Arabic. If English, reply in English).\n"
+                "3. FALLBACK RULE: If the context does not contain the answer, respond in the customer's language stating that you don't have the information and will connect them with an agent.\n"
+                f"4. Customer Sentiment: {sent_str}. If the customer is Frustrated or Angry, begin your response with a polite apology acknowledging their frustration.\n\n"
+                f"[Context]\n{context}\n\n"
+                f"[Customer Question]\n\"{user_query}\"\n"
                 "Answer:"
             )
 
             chat_completion = client.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
-                model="openai/gpt-oss-120b",
+                model="openai/gpt-oss-120b", 
                 temperature=0.0,
                 max_tokens=250
             )
