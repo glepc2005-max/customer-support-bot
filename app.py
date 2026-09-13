@@ -11,7 +11,7 @@ from groq import Groq
 
 st.set_page_config(page_title="Customer Support AI Assistant", page_icon="🤖", layout="centered")
 
-GOOGLE_DRIVE_FILE_ID = "ضع_الـ_FILE_ID_هنا"
+GOOGLE_DRIVE_FILE_ID = "1zZPTJADFvfVh6DwTnRhEJgwkT7a4yiDV"
 
 @st.cache_resource
 def download_and_extract_models():
