@@ -11,7 +11,7 @@ from groq import Groq
 
 st.set_page_config(page_title="Customer Support AI Assistant", page_icon="🤖", layout="centered")
 
-GOOGLE_DRIVE_FILE_ID = "1zZPTJADFvfVh6DwTnRhEJgwkT7a4yiDV"
+GOOGLE_DRIVE_FILE_ID = "ضع_الـ_FILE_ID_هنا"
 
 @st.cache_resource
 def download_and_extract_models():
@@ -57,10 +57,10 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.write(message["content"])
         if "diagnostics" in message:
-            with st.expander("🔍 تفاصيل التحليل الخلفي (Pipeline Diagnostics)"):
-                st.write(f"- **اللغة المكتشفة:** `{message['diagnostics']['lang']}`")
-                st.write(f"- **تصنيف النية (Intent):** `{message['diagnostics']['intent']}`")
-                st.write(f"- **الحالة النفسية (Sentiment):** `{message['diagnostics']['sent']}`")
+            with st.expander("تفاصيل التحليل الخلفي"):
+                st.write(f"- اللغة المكتشفة: `{message['diagnostics']['lang']}`")
+                st.write(f"- تصنيف النية: `{message['diagnostics']['intent']}`")
+                st.write(f"- الحالة النفسية: `{message['diagnostics']['sent']}`")
 
 if user_query := st.chat_input("اكتب استفسارك أو شكواك هنا..."):
     st.session_state.messages.append({"role": "user", "content": user_query})
@@ -85,20 +85,20 @@ if user_query := st.chat_input("اكتب استفسارك أو شكواك هنا
             retrieved_chunks = [responses[idx][:350] for idx in indices[0]]
             context = "\n".join([f"- {chunk.strip()}" for chunk in retrieved_chunks])
             
-            prompt = f"""[System Instructions]
-You are a strict customer support assistant. 
-Your ONLY job is to answer based EXCLUSIVELY on the provided Context.
-Rules:
-1. If context does not contain the answer, reply EXACTLY with: "I apologize, but I don't have that information. Let me connect you with an agent." DO NOT add anything else.
-2. NEVER use general knowledge.
-3. Customer Sentiment: {sent_str}. If frustrated, start with a polite apology.
-
-[Context]
-{context}
-
-[Customer Question]
-"{user_query}"
-Answer:""
+            prompt = (
+                "[System Instructions]\n"
+                "You are a strict customer support assistant.\n"
+                "Your ONLY job is to answer based EXCLUSIVELY on the provided Context.\n"
+                "Rules:\n"
+                "1. If context does not contain the answer, reply EXACTLY with: \"I apologize, but I don't have that information. Let me connect you with an agent.\"\n"
+                "2. NEVER use general knowledge.\n"
+                f"3. Customer Sentiment: {sent_str}. If frustrated, start with a polite apology.\n\n"
+                "[Context]\n"
+                f"{context}\n\n"
+                "[Customer Question]\n"
+                f"\"{user_query}\"\n"
+                "Answer:"
+            )
 
             chat_completion = client.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
@@ -122,7 +122,7 @@ Answer:""
             
             with st.chat_message("assistant"):
                 st.write(bot_response)
-                with st.expander("🔍 تفاصيل التحليل الخلفي (Pipeline Diagnostics)"):
-                    st.write(f"- **اللغة المكتشفة:** `{lang_pred}`")
-                    st.write(f"- **تصنيف النية (Intent):** `{intent_pred}`")
-                    st.write(f"- **الحالة النفسية (Sentiment):** `{sent_str}`"))
+                with st.expander("تفاصيل التحليل الخلفي"):
+                    st.write(f"- اللغة المكتشفة: `{lang_pred}`")
+                    st.write(f"- تصنيف النية: `{intent_pred}`")
+                    st.write(f"- الحالة النفسية: `{sent_str}`")
