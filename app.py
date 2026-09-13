@@ -98,7 +98,7 @@ Rules:
 
 [Customer Question]
 "{user_query}"
-Answer:"""
+Answer:""
 
             chat_completion = client.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
@@ -125,4 +125,4 @@ Answer:"""
                 with st.expander("🔍 تفاصيل التحليل الخلفي (Pipeline Diagnostics)"):
                     st.write(f"- **اللغة المكتشفة:** `{lang_pred}`")
                     st.write(f"- **تصنيف النية (Intent):** `{intent_pred}`")
-                    st.write(f"- **الحالة النفسية (Sentiment):** `{sent_str}`")iment):** `{sent_str}`")
+                    st.write(f"- **الحالة النفسية (Sentiment):** `{sent_str}`"))
